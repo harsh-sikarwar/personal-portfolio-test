@@ -1,7 +1,7 @@
 # Design decisions
 
-Every judgement call made while implementing `design/Portfolio.dc.html` as a
-deployable site, and why.
+Every judgement call made while implementing `Portfolio.dc.html` (from the
+Claude Design project) as a deployable site, and why.
 
 The governing rule throughout: **the design is the source of truth for
 appearance.** Colors, type ramp, spacing, radii, shadows and every animation
@@ -14,8 +14,8 @@ did not cover.
 ## 1. Ported the design rather than shipping the `.dc.html`
 
 **Decision.** Build `index.html` + `assets/css/styles.css` + `assets/js/main.js`
-as a dependency-free static site, and keep the `.dc.html` in `design/` as
-reference.
+as a dependency-free static site. The `.dc.html` source is not vendored — see
+decision 13.
 
 **Why.** `Portfolio.dc.html` is a Design Component, not a web page. It cannot be
 deployed as-is:
@@ -96,19 +96,24 @@ count even, so the halves stay equal and the `-50%` math holds. Verified at
 
 ---
 
-## 5. Section links hidden below 900px
+## 5. Drawer navigation below 900px
 
-**Decision.** `.nav__links { display: none }` under 900px. No hamburger.
+**Decision.** Below 900px the inline links are replaced by a hamburger that
+opens a right-hand drawer.
 
-**Why.** The design has no mobile navigation. At 390px the four links plus the
-status pill and the CTA cannot fit on one line; letting them wrap produces a
-three-row floating bar covering the hero. Hiding them keeps the nav to its two
-most useful elements — availability status and "Let's Talk" — on a single-page
-site where scrolling reaches everything.
+**Why.** The design has no mobile navigation, and at 390px four links plus the
+status pill and the CTA cannot share a line. An earlier pass simply hid the
+links, which left phone visitors scrolling to find Open Source and Experience.
+The drawer restores them and adds the two sections the bar never had room for
+(What I Build, Contact), plus email and social links.
 
-This is the decision most likely to want revisiting. See `OPEN-QUESTIONS.md` #3.
+**How.** `aria-expanded` / `aria-controls` on the button, `aria-hidden` and
+`inert` on the panel, a scrim, `Escape` to close, a Tab focus trap, focus
+returned to the burger on close, `body.is-locked` to stop background scroll,
+and close-on-navigate. Crossing back above 900px force-closes it so focus can
+never be trapped in a hidden panel.
 
-Related: `.nav__pill-text` is also hidden under 620px, leaving the pulsing green
+Related: `.nav__pill-text` is hidden under 620px, leaving the pulsing green
 status dot alone.
 
 ---
@@ -220,3 +225,59 @@ defined once.
 
 Kept flat: no preprocessor, no build step, no framework. The whole site is three
 files plus a README.
+
+---
+
+## 13. The design source is not vendored
+
+**Decision.** `design/` removed; the `.dc.html` and its runtime are not in the
+repository.
+
+**Why.** Asked for directly. It also removes 141KB the site never loaded, and
+keeps the deployed tree to exactly what Vercel serves. `docs/PROJECT-DATA.md`
+remains the record of what was used, and the design itself still lives in the
+Claude Design project.
+
+---
+
+## 14. One gutter, enforced, with two deliberate exceptions
+
+**Decision.** Every section carries the same `--pad` gutter on both sides, and
+no content crosses it. Verified at 13 widths from 320px to 2560px.
+
+**Why.** Two things were breaking out of it:
+
+- **The hero name.** `clamp(38px, 10.4vw, 168px)` sizes type off the *viewport*,
+  but the name sits in a 1180px content box — so at 1440px "HARSHVARDHAN"
+  measured 1304px and ran ~124px past the gutter, nearly touching the window
+  edge.
+- **The open-source torus.** `right: -4%` with `width: min(760px, 68vw)`
+  deliberately bled off-screen, overhanging by 58px at 1440 and 77px at 1920,
+  and colliding with the facts grid.
+
+**How.** `fitName()` measures the widest word at a reference size and sets
+`--name-size` so it lands exactly on the content edge — recomputed on resize
+and after `document.fonts.ready`, so a fallback face with different metrics
+still fits. The CSS `clamp()` remains as a conservative no-JS fallback. The
+torus moved inside `.section__inner` and anchors to `right: 0`, which *is* the
+content edge, so it needs no magic numbers.
+
+The nav was also widened from a hardcoded `calc(100% - 28px)` to
+`calc(100% - var(--pad) * 2)` so its edges line up with the content rather than
+sitting 4px proud, and the skip link now aligns to the gutter too.
+
+**The two exceptions**, both intentional: the marquee (a ticker must run edge to
+edge; the section clips it, so it adds no page scroll) and the full-bleed
+background canvases in the hero and contact sections, which paint the page
+ground rather than content.
+
+---
+
+## 15. LinkedIn ball uses the LinkedIn brand blue
+
+**Decision.** `--linkedin: #0a66c2` instead of the site accent.
+
+**Why.** Asked for. The ball is a recognisable brand mark, and rendering it in
+the site's terracotta accent read as a generic button. The GitHub and mail balls
+stay in the site palette, which is right — one is monochrome by nature and the
+other is not a third-party brand.

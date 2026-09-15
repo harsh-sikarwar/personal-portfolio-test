@@ -30,13 +30,12 @@ npx http-server . -p 8080     # then visit http://localhost:8080
 index.html              markup and copy
 assets/css/styles.css   design tokens, layout, hover and responsive rules
 assets/js/main.js       canvas visuals and interactions
-design/
-  Portfolio.dc.html     the design source this was built from
-  support.js            Claude Design component runtime (used by the .dc.html)
 docs/                   build notes (see above)
 ```
 
-`design/` is reference material — the site does not load anything from it.
+The design source is not kept in this repository — it lives in the Claude
+Design project the site was built from. `docs/PROJECT-DATA.md` records which
+files were used.
 
 ## Sections
 
@@ -89,10 +88,20 @@ Motion parameters that were editor tweaks in the design (`gridSpacing`,
   coarse pointers.
 - The stack marquee is `aria-hidden`; the same list is available to screen
   readers as visually-hidden text.
-- No horizontal overflow at 390px or 1440px.
+- No horizontal overflow, and no content outside the gutter, at any width from
+  320px to 2560px.
 
-### Known gap
+## Navigation
 
-Below 900px the nav's section links are hidden — the design has no mobile menu,
-and four links plus the status pill and CTA do not fit. Navigation is by
-scrolling. A disclosure menu would close this if you want one.
+Above 900px the section links sit in the floating nav bar. Below it they move
+into a drawer behind the hamburger: `Escape` and the scrim close it, focus is
+trapped while open and returns to the button on close, and background scroll is
+locked.
+
+## Layout rule
+
+Every section keeps the same `--pad` gutter on both sides and no content crosses
+it. Two things are full-bleed on purpose: the stack marquee, and the background
+canvases in the hero and contact sections. The hero name is measured and scaled
+at runtime (`fitName()`) so it lands exactly on the content edge rather than
+being sized off the viewport.

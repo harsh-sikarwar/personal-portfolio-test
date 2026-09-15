@@ -563,6 +563,118 @@
     });
   }
 
+  /* ── fit the hero name to the content box ───────────────────────
+     The design's clamp() sizes the name off the viewport, so at 1440px
+     "HARSHVARDHAN" ran ~124px past the gutter. Measure the widest word at a
+     known size and scale so it lands exactly on the content-box edge — which
+     also survives the fallback face, whose metrics differ from Archivo. */
+
+  var REF = 100;   // px; width is linear in font-size, so one sample is enough
+  var NAME_MAX = 168;
+
+  function fitName() {
+    var name = $('#name');
+    var row = name && name.querySelector('.name__row');
+    if (!row) return;
+    var words = $$('.name__word', row);
+    if (!words.length) return;
+
+    var avail = row.clientWidth;
+    if (!avail) return;
+
+    name.style.setProperty('--name-size', REF + 'px');
+    var widest = 0;
+    words.forEach(function (w) {
+      widest = Math.max(widest, w.scrollWidth);
+    });
+    if (!widest) { name.style.removeProperty('--name-size'); return; }
+
+    var size = Math.min(NAME_MAX, (avail / widest) * REF);
+    name.style.setProperty('--name-size', (Math.floor(size * 100) / 100) + 'px');
+  }
+
+  function watchName() {
+    fitName();
+    on(window, 'resize', fitName);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(fitName).catch(function () {});
+    }
+  }
+
+  /* ── drawer (small screens) ─────────────────────────────── */
+
+  function drawer() {
+    var burger = $('#navBurger');
+    var panel = $('#drawer');
+    var scrim = $('#drawerScrim');
+    var closeBtn = $('#drawerClose');
+    if (!burger || !panel || !scrim) return;
+
+    var open = false;
+    var lastFocus = null;
+
+    function focusables() {
+      return $$('a[href], button:not([disabled])', panel);
+    }
+
+    function setOpen(next) {
+      if (next === open) return;
+      open = next;
+
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.body.classList.toggle('is-locked', open);
+
+      if (open) {
+        lastFocus = document.activeElement;
+        scrim.hidden = false;
+        panel.removeAttribute('inert');
+        // next frame, so the transition runs from the closed position
+        requestAnimationFrame(function () {
+          scrim.classList.add('is-open');
+          panel.classList.add('is-open');
+        });
+        var f = focusables();
+        if (f.length) f[0].focus();
+      } else {
+        scrim.classList.remove('is-open');
+        panel.classList.remove('is-open');
+        panel.setAttribute('inert', '');
+        window.setTimeout(function () { if (!open) scrim.hidden = true; }, 380);
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+    }
+
+    on(burger, 'click', function () { setOpen(!open); });
+    on(scrim, 'click', function () { setOpen(false); });
+    if (closeBtn) on(closeBtn, 'click', function () { setOpen(false); });
+
+    // close on navigation
+    $$('a[href^="#"]', panel).forEach(function (a) {
+      on(a, 'click', function () { setOpen(false); });
+    });
+
+    on(document, 'keydown', function (e) {
+      if (!open) return;
+      if (e.key === 'Escape') { setOpen(false); return; }
+      if (e.key !== 'Tab') return;
+      var f = focusables();
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+
+    // leaving the small-screen range closes it, so focus can't be trapped
+    if (window.matchMedia) {
+      var mq = window.matchMedia('(min-width: 901px)');
+      var onChange = function (e) { if (e.matches) setOpen(false); };
+      if (mq.addEventListener) mq.addEventListener('change', onChange);
+      else if (mq.addListener) mq.addListener(onChange);
+    }
+  }
+
   /* ── marquee: keep an even track count wider than the viewport ───
      The CSS scrolls the strip by -50%, i.e. exactly half its tracks. That
      half has to be at least viewport-wide or a gap shows at the seam, so on
@@ -589,6 +701,7 @@
     field($('#footCanvas'), $('#contact'), 0.8);
     knot();
     solid();
+    watchName();
     letters();
     cursor();
     reveal();
@@ -596,6 +709,7 @@
     progress();
     balls();
     accordion();
+    drawer();
     marquees();
     on(window, 'resize', marquees);
   }

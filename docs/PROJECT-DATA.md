@@ -12,8 +12,8 @@ What this implementation was built from, and where each piece came from.
 | Resume | `Harshvardhan_Sikarwar_Full_Stack_Developer_Resume.pdf`, 2 pages | text via `pypdf`; URLs via PDF link annotations |
 | Repository | `harsh-sikarwar/personal-portfolio-test` | empty — no commits, no default branch |
 
-Both design files are kept in `design/` for reference. The site loads nothing
-from that folder.
+Neither design file is kept in this repository. They remain in the Claude
+Design project; this document is the record of what was used.
 
 ### Access note
 
@@ -120,13 +120,28 @@ project descriptions and their metrics.
 
 ## Verification performed
 
-Chromium via Playwright at **390 / 1440 / 2560 px**:
+Chromium via Playwright at **13 widths — 320, 360, 390, 430, 540, 640, 768,
+900, 1024, 1280, 1440, 1920, 2560 px**:
 
-- no console errors, page errors or failed requests
+- no console errors, page errors or failed requests at any width
 - no horizontal overflow at any width
+- **gutter compliance**: no content element crosses `--pad` on either side, at
+  any of the 13 widths. The only exceptions are deliberate and excluded by
+  name — the marquee ticker and the full-bleed background canvases
+- **hero name** measures exactly the content-box width at every width
+  (1180/1180 down to 288/288)
+- **open-source torus** overhang is ≤ 0 everywhere; hidden below 760px
+- **social balls** stay within the arena, and the arena within the gutter
+  (checked from transform values, since a rotating square's bounding box is
+  wider than the circle it paints)
+- **drawer**: opens and closes, `aria-expanded` / `aria-hidden` / `inert` /
+  `body.is-locked` all track state, focus moves in on open and returns to the
+  burger on close, `Escape` closes, navigating closes, and it is `display:none`
+  above 900px
 - accordion opens exclusively, toggles closed, `aria-expanded` and panel
   `hidden` stay in sync
-- anchor navigation lands 92px clear of the fixed nav
+- anchor navigation lands 92px clear of the fixed nav, from both the bar and
+  the drawer
 - `prefers-reduced-motion: reduce` — marquee animation `none`, transitions
   disabled, counters settle to 57 / 931 / 45 / 15 without animating
 - marquee halves exceed viewport width at 2560px with an even track count

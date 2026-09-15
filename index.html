@@ -38,8 +38,42 @@
     <a href="#stack" data-cursor="link">Stack</a>
     <a href="#exp" data-cursor="link">Experience <span class="nav__count">[3]</span></a>
   </div>
-  <a href="#contact" class="btn btn--solid nav__cta" data-cursor="cta">Let&rsquo;s Talk</a>
+  <div class="nav__end">
+    <a href="#contact" class="btn btn--solid nav__cta" data-cursor="cta">Let&rsquo;s Talk</a>
+    <button type="button" class="burger" id="navBurger" data-cursor="cta"
+            aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <span class="burger__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+  </div>
 </nav>
+
+<div class="drawer-scrim" id="drawerScrim" hidden></div>
+
+<aside class="drawer" id="drawer" aria-label="Site menu" aria-hidden="true" inert>
+  <div class="drawer__head">
+    <span class="drawer__brand">Harshvardhan&nbsp;Sikarwar</span>
+    <button type="button" class="drawer__close" id="drawerClose" aria-label="Close menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <nav class="drawer__nav" aria-label="Sections">
+    <a href="#work"><span>Work</span><span class="drawer__count">03</span></a>
+    <a href="#oss"><span>Open Source</span><span class="drawer__count">02</span></a>
+    <a href="#stack"><span>Stack</span></a>
+    <a href="#exp"><span>Experience</span><span class="drawer__count">03</span></a>
+    <a href="#services"><span>What I Build</span><span class="drawer__count">05</span></a>
+    <a href="#contact"><span>Contact</span></a>
+  </nav>
+
+  <div class="drawer__foot">
+    <a href="mailto:hvsikarwar@gmail.com" class="drawer__mail">hvsikarwar@gmail.com</a>
+    <div class="drawer__social">
+      <a href="https://github.com/harsh-sikarwar" target="_blank" rel="noreferrer noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/harshvardhan-sikarwar-12aa86237/" target="_blank" rel="noreferrer noopener">LinkedIn</a>
+    </div>
+  </div>
+</aside>
 
 <main id="main">
 
@@ -234,8 +268,8 @@
 
 <!-- ───────────────────────── OPEN SOURCE ───────────────────────── -->
 <section class="section oss" id="oss" aria-labelledby="oss-h">
-  <canvas class="oss__canvas" id="knotCanvas" aria-hidden="true"></canvas>
   <div class="section__inner">
+    <canvas class="oss__canvas" id="knotCanvas" aria-hidden="true"></canvas>
     <div class="section__head">
       <h2 class="section__title" id="oss-h">/OPEN SOURCE</h2>
       <span class="section__note">Contributing where the codebase is unfamiliar</span>

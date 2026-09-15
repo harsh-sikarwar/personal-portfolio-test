@@ -8,7 +8,11 @@ Nothing here blocks the site from working — it is built, verified and complete
 
 ---
 
-## 1. Which LinkedIn URL is correct? — needs your answer
+## 1. Which LinkedIn URL is correct? — RESOLVED
+
+**Confirmed: the resume's URL is correct.** No further action.
+
+<details><summary>Original question</summary>
 
 The two sources disagree:
 
@@ -25,7 +29,7 @@ form is likely an assumption rather than a real profile.
 page meant to get you contacted. Please confirm. If you *have* since claimed the
 vanity URL, the design's version is the better one and I'll switch both.
 
-Affects `index.html` in two places.
+</details>
 
 ---
 
@@ -43,10 +47,14 @@ Cheap to add either way. Say which tones you're weighing and I'll wire it.
 
 ---
 
-## 3. Mobile navigation
+## 3. Mobile navigation — RESOLVED
 
-Section links are hidden below 900px with no replacement
-(`DESIGN-DECISIONS.md` #5).
+**A hamburger drawer was added** (`DESIGN-DECISIONS.md` #5). The section links,
+plus What I Build, Contact, email and socials, are now reachable on phones.
+
+<details><summary>Original question</summary>
+
+Section links were hidden below 900px with no replacement.
 
 **Uncertain because** the design simply doesn't answer it, and there's a real
 trade-off. It's a single-page site, so scrolling reaches everything and the CTA
@@ -56,9 +64,15 @@ looks for first, and on a phone they're several screens down.
 **Options.** A disclosure menu behind a button; or a compact scrolling link
 strip; or leave as-is. I'd lean toward the disclosure menu. Your call.
 
+</details>
+
 ---
 
-## 4. Should `design/` stay in the repository?
+## 4. Should `design/` stay in the repository? — RESOLVED
+
+**Removed.** See `DESIGN-DECISIONS.md` #13.
+
+<details><summary>Original question</summary>
 
 `design/Portfolio.dc.html` (72KB) and `design/support.js` (69KB) are committed as
 reference — 141KB the site never loads.
@@ -70,6 +84,8 @@ means the repo is only the site. If Claude Design remains your source of truth,
 edit, and it's regenerated upstream anyway.
 
 My mild preference: keep `Portfolio.dc.html`, drop `support.js`.
+
+</details>
 
 ---
 
@@ -129,7 +145,8 @@ setting enabled if you have an opinion.
 
 ## 9. Not verified: real-device and cross-browser behaviour
 
-Everything was checked in headless Chromium at 390 / 1440 / 2560px. Not checked:
+Everything was checked in headless Chromium across 13 widths (320–2560px).
+Not checked:
 
 - **Safari / WebKit** — the design leans on `-webkit-text-stroke` (hero name,
   marquee outlines) and `backdrop-filter`, both prefixed and handled, but only
@@ -138,6 +155,8 @@ Everything was checked in headless Chromium at 390 / 1440 / 2560px. Not checked:
   differently at large sizes.
 - **A real touch device** — the coarse-pointer guard is right in theory;
   `pointermove` on the arena and card tilt behave differently under real touch.
+  The drawer was exercised with synthetic clicks and keyboard, not real touch
+  gestures — swipe-to-close is not implemented.
 - **Canvas load on low-end hardware** — four continuous `requestAnimationFrame`
   loops run simultaneously. Fine on a laptop; unmeasured on a budget phone. If
   it matters, the canvases could pause via `IntersectionObserver` when off-screen
@@ -145,14 +164,22 @@ Everything was checked in headless Chromium at 390 / 1440 / 2560px. Not checked:
 
 ---
 
-## 10. Deployment target unknown
+## 10. Vercel deployment — mostly resolved
 
-The repository was empty, so there was no convention to follow. I assumed a
-plain static host — relative asset paths, no build step, works from `file://` or
-any static server.
+**Confirmed: this repo deploys to Vercel.** Nothing needed for it to work — the
+site is static with relative paths and no build step, which Vercel serves as-is
+from the repository root. No `vercel.json` was added, since none is required and
+an unnecessary one only adds a thing to maintain.
 
-If it's going to GitHub Pages under a subpath, or Vercel with a framework
-preset, tell me and I'll adjust paths and add the config.
+**One item still needs you:** the repository's default branch is
+`claude/peaceful-newton-zn4xfi`, not `main`. Vercel's production deployment
+follows the production branch (usually `main`), so check which branch the
+project is set to build. Both branches carry identical commits, so either works
+— but they will drift if future work lands on only one.
+
+Worth adding later if you want it: long-lived cache headers on `assets/`. It
+needs filename hashing first, otherwise a cached `styles.css` goes stale on the
+next deploy.
 
 ---
 
@@ -167,3 +194,5 @@ For contrast — these were verified, not assumed:
 - Project and PR URLs came from the resume's embedded hyperlinks, not invented.
 - No console errors, no page errors, no horizontal overflow at any tested width.
 - Accordion, anchor navigation and the reduced-motion path behave correctly.
+- No content crosses the gutter at any of the 13 tested widths.
+- The drawer's focus handling, state attributes and scroll lock behave correctly.
