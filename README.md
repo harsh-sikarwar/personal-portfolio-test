@@ -7,6 +7,15 @@ Implemented from the Claude Design project
 **Developer Portfolio UI Mockups** (`Portfolio.dc.html`), with content details
 taken from the resume.
 
+## Build notes
+
+- [`docs/PROJECT-DATA.md`](docs/PROJECT-DATA.md) — the design files, resume and
+  context this was built from, and how each was read
+- [`docs/DESIGN-DECISIONS.md`](docs/DESIGN-DECISIONS.md) — every judgement call
+  made porting the design, and why
+- [`docs/OPEN-QUESTIONS.md`](docs/OPEN-QUESTIONS.md) — what is unresolved and
+  needs your input (start with #1, a LinkedIn URL conflict)
+
 ## Run it
 
 Open `index.html` directly, or serve the folder:
@@ -24,6 +33,7 @@ assets/js/main.js       canvas visuals and interactions
 design/
   Portfolio.dc.html     the design source this was built from
   support.js            Claude Design component runtime (used by the .dc.html)
+docs/                   build notes (see above)
 ```
 
 `design/` is reference material — the site does not load anything from it.
