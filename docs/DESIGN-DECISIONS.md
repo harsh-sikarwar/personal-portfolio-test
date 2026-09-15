@@ -281,3 +281,52 @@ ground rather than content.
 the site's terracotta accent read as a generic button. The GitHub and mail balls
 stay in the site palette, which is right — one is monochrome by nature and the
 other is not a third-party brand.
+
+---
+
+## 16. The custom cursor now hides the native one everywhere
+
+**Decision.** `cursor: none` is applied through a `.cursor-live` class on
+`<html>` that `cursor()` adds, rather than the inline
+`documentElement.style.cursor = 'none'` the first port used. The rule is
+`.cursor-live, .cursor-live * { cursor: none !important; }`.
+
+**Why.** The port of the design's `cursor()` was faithful — the dot, the ring,
+the 0.16 follow, the 1.6/2.1 hover scales are all the design's numbers — but it
+only set `cursor: none` on the root element. `cursor` inherits, so that works
+for plain text, and it is why the effect looked correct on the background. It
+does **not** survive an element that sets its own: the UA stylesheet gives every
+`<a>` `cursor: pointer`, and the stylesheet sets it again on `.btn`, `.burger`,
+`.acc__btn`, `.ball`, `.link-arrow`, `.oss__pr`, `.contact__cta`,
+`.drawer__close` and `.drawer__mail`.
+
+The result was the system hand sitting on top of the custom cursor over all
+eleven interactive element types — which is exactly where a cursor gets looked
+at. Measured before the fix: 11 leaking selectors. After: 0.
+
+The design has the same hole; it is just less visible in a preview frame where
+you hover fewer things. This is a fix to the design, not a port of it.
+
+**Why a class and not an inline style.** Three things fall out of it for free:
+
+- **No JS, no harm.** If the script fails or never runs, the class is never
+  added and the native cursor is untouched. Hiding the system cursor with
+  nothing to replace it is the worst failure mode this feature has, and
+  gating it in CSS makes that unreachable.
+- **Touch stays native.** The class goes on only after a `pointermove` whose
+  `pointerType` is a mouse or pen, and comes off on a touch `pointerdown` or if
+  `(pointer: fine)` stops matching. A hybrid laptop that reports a fine pointer
+  but is being used by finger keeps its cursor. The coarse-pointer media query
+  re-asserts `pointer` on interactive elements as a second line of defence.
+- **The rAF loop is lazy.** It starts on first real mouse movement instead of
+  at init, so a phone never runs it at all.
+
+**On `!important`.** Deliberate. This is a mode switch rather than a style —
+the whole point is that no other rule may reassert a cursor — and without it
+every future `cursor: pointer` silently reopens the bug.
+
+**Reduced motion.** The ring trails the pointer by design; that lag is motion.
+Under `prefers-reduced-motion: reduce` the follow and scale easing go to 1, so
+the ring tracks the pointer exactly instead of being disabled. Verified: it
+lands on the pointer position in a single frame. This extends decision #8's
+reasoning — keep the thing, remove the movement.

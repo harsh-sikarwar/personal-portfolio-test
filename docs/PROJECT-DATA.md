@@ -145,6 +145,15 @@ Chromium via Playwright at **13 widths — 320, 360, 390, 430, 540, 640, 768,
 - `prefers-reduced-motion: reduce` — marquee animation `none`, transitions
   disabled, counters settle to 57 / 931 / 45 / 15 without animating
 - marquee halves exceed viewport width at 2560px with an even track count
+- custom cursor: hidden until the first mouse/pen move, then dot and ring both
+  visible and tracking; ring scales 1 → 1.58 over `data-cursor="link"` and
+  → 2.08 over `data-cursor="cta"` (design targets 1.6 / 2.1, sampled mid-ease);
+  **0 elements re-assert a native cursor**, down from 11 before the fix
+- custom cursor on touch (390x844, `hasTouch`): `.cursor-live` never added,
+  dot/ring `display:none`, links keep `cursor: pointer`
+- custom cursor with JavaScript disabled: links keep `cursor: pointer`
+- custom cursor under `prefers-reduced-motion: reduce`: ring lands exactly on
+  the pointer in one frame instead of trailing
 
 Google Fonts could not load inside the sandbox (the proxy CA is not in
 Chromium's trust store). Rather than disable TLS verification, the fonts were

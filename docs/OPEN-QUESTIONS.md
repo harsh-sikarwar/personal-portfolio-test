@@ -156,7 +156,9 @@ Not checked:
 - **A real touch device** — the coarse-pointer guard is right in theory;
   `pointermove` on the arena and card tilt behave differently under real touch.
   The drawer was exercised with synthetic clicks and keyboard, not real touch
-  gestures — swipe-to-close is not implemented.
+  gestures — swipe-to-close is not implemented. The custom cursor's touch path
+  was checked with emulated touch (`hasTouch`), which fires a real
+  `pointerType: "touch"`, but not on physical hardware.
 - **Canvas load on low-end hardware** — four continuous `requestAnimationFrame`
   loops run simultaneously. Fine on a laptop; unmeasured on a budget phone. If
   it matters, the canvases could pause via `IntersectionObserver` when off-screen

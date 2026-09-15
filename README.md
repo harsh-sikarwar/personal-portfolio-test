@@ -53,7 +53,7 @@ All visuals are drawn at runtime — the site ships no images.
 | Shaded icosahedron | about (`solid()`) |
 | Per-letter 3D tilt on the name | hero (`letters()`) |
 | Rolling social "balls" with collisions | hero (`balls()`) |
-| Custom cursor (fine pointers only) | global (`cursor()`) |
+| Custom cursor — dot + trailing ring (mouse/pen only) | global (`cursor()`) |
 | Reveal-on-scroll + count-up stats | about, work, open source |
 | Card tilt | work cards |
 | Scroll progress bar + nav backdrop | global (`progress()`) |
@@ -85,7 +85,11 @@ Motion parameters that were editor tweaks in the design (`gridSpacing`,
 - `prefers-reduced-motion: reduce` stops the marquees, the letter tilt, the
   count-up and the canvas drift, and freezes the rolling balls.
 - The custom cursor and the pointer-driven canvas warps are suppressed on
-  coarse pointers.
+  coarse pointers. The native cursor is only hidden once a real mouse or pen
+  moves (`cursor()` adds `.cursor-live` to `<html>`), so touch devices and a
+  no-JS page always keep a usable cursor.
+- Under `prefers-reduced-motion: reduce` the cursor ring stops trailing and
+  tracks the pointer exactly, rather than disappearing.
 - The stack marquee is `aria-hidden`; the same list is available to screen
   readers as visually-hidden text.
 - No horizontal overflow, and no content outside the gutter, at any width from

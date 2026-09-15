@@ -331,15 +331,52 @@
 
   /* ── custom cursor ──────────────────────────────────────── */
 
+  /* Hiding the native cursor is gated on a class rather than an inline
+     style: the `cursor: none` rules live in CSS, so if this script never
+     runs the system cursor is left alone. The class also goes on only
+     once a real mouse or pen has moved — a touch user never loses their
+     cursor, even on a hybrid device that reports `pointer: fine`. */
   function cursor() {
     var dot = $('#cursorDot'), ring = $('#cursorRing');
     if (!dot || !ring) return;
-    if (window.matchMedia && !window.matchMedia('(pointer:fine)').matches) return;
 
-    document.documentElement.style.cursor = 'none';
-    var x = -100, y = -100, rx = -100, ry = -100, sc = 1, tsc = 1, shown = 0;
+    var fine = window.matchMedia
+      ? window.matchMedia('(pointer:fine)')
+      : { matches: true };
+    var root = document.documentElement;
+    var x = -100, y = -100, rx = -100, ry = -100, sc = 1, tsc = 1;
+    var shown = 0, stop = null;
+
+    function hide() {
+      dot.style.opacity = '0'; ring.style.opacity = '0'; shown = 0;
+    }
+
+    function enable() {
+      if (stop) return;
+      root.classList.add('cursor-live');
+      stop = loop(function () {
+        /* The ring trails the pointer; that lag is motion, so with
+           reduced motion asked for it snaps to the pointer instead. */
+        var ease = CFG.reduce ? 1 : 0.16;
+        var zoom = CFG.reduce ? 1 : 0.12;
+        rx += (x - rx) * ease; ry += (y - ry) * ease; sc += (tsc - sc) * zoom;
+        dot.style.transform =
+          'translate3d(' + (x - 3) + 'px,' + (y - 3) + 'px,0)';
+        ring.style.transform =
+          'translate3d(' + (rx - 17) + 'px,' + (ry - 17) + 'px,0) scale(' + sc.toFixed(3) + ')';
+      });
+    }
+
+    function disable() {
+      if (!stop) return;
+      stop(); stop = null;
+      root.classList.remove('cursor-live');
+      hide();
+    }
 
     on(window, 'pointermove', function (e) {
+      if (e.pointerType === 'touch' || !fine.matches) { disable(); return; }
+      enable();
       x = e.clientX; y = e.clientY;
       if (!shown) {
         shown = 1; rx = x; ry = y;
@@ -348,16 +385,17 @@
       var t = e.target && e.target.closest ? e.target.closest('[data-cursor]') : null;
       tsc = t ? (t.getAttribute('data-cursor') === 'cta' ? 2.1 : 1.6) : 1;
     });
-    on(document, 'pointerleave', function () {
-      dot.style.opacity = '0'; ring.style.opacity = '0'; shown = 0;
-    });
 
-    loop(function () {
-      rx += (x - rx) * 0.16; ry += (y - ry) * 0.16; sc += (tsc - sc) * 0.12;
-      dot.style.transform = 'translate3d(' + (x - 3) + 'px,' + (y - 3) + 'px,0)';
-      ring.style.transform =
-        'translate3d(' + (rx - 17) + 'px,' + (ry - 17) + 'px,0) scale(' + sc.toFixed(3) + ')';
+    /* Finger or stylus tap on a hybrid: give the native cursor back. */
+    on(window, 'pointerdown', function (e) {
+      if (e.pointerType === 'touch') disable();
     });
+    on(document, 'pointerleave', hide);
+    if (fine.addEventListener) {
+      fine.addEventListener('change', function () {
+        if (!fine.matches) disable();
+      });
+    }
   }
 
   /* ── reveal on scroll + count-up ────────────────────────── */

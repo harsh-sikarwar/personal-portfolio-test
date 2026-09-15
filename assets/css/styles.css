@@ -94,11 +94,22 @@ img { max-width: 100%; }
   z-index: 120;
 }
 
+/* While the custom cursor is live nothing may re-assert a native one.
+   Links and buttons carry `cursor: pointer` from the UA stylesheet, so
+   without this the system hand sits on top of the custom cursor over
+   every interactive element — which is exactly where it gets looked at.
+   The class is added by cursor() in main.js only for a real mouse or
+   pen, so touch devices and a no-JS page keep the native cursor. */
+.cursor-live, .cursor-live * { cursor: none !important; }
+
 .cursor-ring, .cursor-dot {
   position: fixed; top: 0; left: 0;
   pointer-events: none; opacity: 0;
   mix-blend-mode: difference;
   transform: translate3d(-100px, -100px, 0);
+  /* The ring is moved every frame from JS; keep it off the main
+     thread and out of the way of the blend. */
+  will-change: transform;
 }
 .cursor-ring {
   width: 34px; height: 34px;
@@ -940,6 +951,9 @@ body.is-locked { overflow: hidden; }
    pointer-driven canvas warps — keep the native cursor. */
 @media (hover: none), (pointer: coarse) {
   .cursor-ring, .cursor-dot { display: none; }
+  .cursor-live, .cursor-live * { cursor: auto !important; }
+  .cursor-live a, .cursor-live button, .cursor-live [role="button"],
+  .cursor-live summary { cursor: pointer !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
