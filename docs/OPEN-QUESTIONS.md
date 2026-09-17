@@ -185,12 +185,34 @@ next deploy.
 
 ---
 
+## 11. Does "3 yrs in tech" count from 2023 or from your first paid role?
+
+The new About tile reads `3 yrs — In tech, building for the web since 2023`,
+counting from the start of the B.Tech. Counting instead from the first paid
+role (Web Developer Intern, Dec 2024) gives closer to 2.
+
+**What I did.** Used 3, as specified, and put "since 2023" in the label so the
+basis is on the page rather than left to the reader.
+
+**Why it matters.** It is a factual claim about you on the page an employer
+reads first. If you would rather it counted professional experience only, say
+so and it becomes `2 yrs — Shipping production code since 2024`.
+
+Same tile set, if you want any of them swapped — all resume-backed:
+`6+` REST APIs integrated · `20+` UI/UX issues resolved · `15+` production
+modules from Figma · `12+` technologies shipped to production ·
+`2` open-source projects with merged contributions (Appwrite, Hatchet).
+
+---
+
 ## Not in doubt
 
 For contrast — these were verified, not assumed:
 
 - Every visual constant matches the design source.
-- All copy is the design's, verbatim.
+- All copy is the design's, verbatim, with one deliberate exception: the four
+  About-section stat tiles were replaced at your request (`DESIGN-DECISIONS.md`
+  #17).
 - Contact details, dates, employers, metrics and the Appwrite PR narrative match
   the resume.
 - Project and PR URLs came from the resume's embedded hyperlinks, not invented.

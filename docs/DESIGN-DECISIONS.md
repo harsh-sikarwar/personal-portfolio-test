@@ -330,3 +330,46 @@ Under `prefers-reduced-motion: reduce` the follow and scale easing go to 1, so
 the ring tracks the pointer exactly instead of being disabled. Verified: it
 lands on the pointer position in a single frame. This extends decision #8's
 reasoning — keep the thing, remove the movement.
+
+---
+
+## 17. The About stat tiles are career metrics, not project trivia
+
+**Decision.** Replaced all four numbers in the About grid. The design's set was
+carried over verbatim in the first build; it is now:
+
+| Was (design) | Now | Grounded in |
+| --- | --- | --- |
+| `57K★` Appwrite — PR merged into a 57K-star repo | `3 yrs` In tech — building for the web since 2023 | B.Tech from 2023; asked for |
+| `931` Passing tests, 0 missed defects | `20+` Projects shipped end-to-end | Asked for; resume supports more |
+| `45×` Order throughput after automation | `30+` Client sites delivered, with on-page SEO | Resume: "delivered 30+ WordPress websites with on-page SEO" |
+| `15+` Production modules shipped from Figma | `57K★` Merged a feature into Appwrite — and the security fix it needed | Resume: merged PR #13148, plus the vulnerability found in review |
+
+**Why.** The design's four were all single-project numbers presented as career
+statistics — a repo's star count, one hackathon's test total, one automation
+script's speed-up, one internship's module count. Three of the four were
+somebody else's number or a detail that means nothing without the project
+attached, and all four already appear in the Work and Open Source sections
+where they have context. As a summary block they said less than the sections
+below them.
+
+The replacements are each a different dimension — time, breadth, delivery
+volume, depth — so the grid reads as a career at a glance.
+
+**The Appwrite tile was kept but reframed.** "PR merged into a 57K-star repo"
+leads with Appwrite's popularity, which is borrowed credit. The number is still
+useful as *scale of codebase entered*, so the label now leads with the action —
+merging a feature, and finding the security hole during review. That fix is the
+strongest single line on the resume and it was not mentioned anywhere in the
+stat grid before.
+
+**Numbers not invented.** `30+` and the Appwrite tile are quoted from the
+resume. `3 yrs` and `20+` were specified. `20+` is conservative against the
+resume, which already lists 30+ WordPress sites, 3 client sites, 15+ modules
+and two named projects — the two tiles count different things (substantial
+builds vs. WordPress delivery), so they do not contradict.
+
+**Uncertain:** whether `3 yrs` should count from starting the B.Tech in 2023 or
+from the first paid role in Dec 2024 (which would be ~2). Went with 2023 as
+specified; the label says "since 2023" so the basis is visible rather than
+implied.

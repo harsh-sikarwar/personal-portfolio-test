@@ -518,6 +518,15 @@ body.is-locked { overflow: hidden; }
   letter-spacing: -.03em;
 }
 .stat__accent { color: var(--accent); }
+/* Unit suffix ("yrs") rides at the number's baseline without competing
+   with it for size. */
+.stat__unit {
+  font-size: .42em;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin-left: .18em;
+  color: var(--ink-66);
+}
 .stat__label {
   margin-top: 9px;
   font: 400 12px/1.4 var(--body);

@@ -56,7 +56,8 @@ images either.
 - **Section order and ids** — `#top`, `#about`, `#work`, `#oss`, `#stack`,
   `#exp`, `#services`, `#contact`.
 - **All copy** — headings, body text, card text, service descriptions, terminal
-  blocks, captions and labels are the design's, verbatim.
+  blocks, captions and labels are the design's, verbatim — except the four
+  About-section stat tiles, replaced on request (`DESIGN-DECISIONS.md` #17).
 - **All interaction constants** — every magic number in `assets/js/main.js`
   (easing factors, blob counts, torus `N`/`M`/`R`/`r`, icosahedron vertices and
   faces, light vector, damping, collision impulse, count-up duration) is the
