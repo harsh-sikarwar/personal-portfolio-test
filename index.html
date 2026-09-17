@@ -502,5 +502,13 @@
 </main>
 
 <script src="assets/js/main.js" defer></script>
+
+<!-- Vercel Web Analytics. This is exactly what @vercel/analytics' inject()
+     appends at runtime, so the npm package would add nothing here: the site
+     is static with no bundler, and a bare import could not resolve. The
+     endpoint is served by Vercel's edge once Web Analytics is enabled for
+     the project, so it 404s on localhost and any non-Vercel host — which is
+     harmless, nothing else depends on it. -->
+<script src="/_vercel/insights/script.js" defer></script>
 </body>
 </html>

@@ -373,3 +373,47 @@ builds vs. WordPress delivery), so they do not contradict.
 from the first paid role in Dec 2024 (which would be ~2). Went with 2023 as
 specified; the label says "since 2023" so the basis is visible rather than
 implied.
+
+---
+
+## 18. Vercel Analytics is a script tag, not the npm package
+
+**Decision.** Added `<script src="/_vercel/insights/script.js" defer></script>`
+before `</body>`. Did **not** run `npm i @vercel/analytics`, and did not add
+`<Analytics/>`.
+
+**Why.** The quickstart that ships with the package is the Next.js path —
+`import { Analytics } from "@vercel/analytics/next"` renders a React component.
+This site is static HTML with vanilla JavaScript: no React, no bundler, no
+build step. A bare module specifier like `@vercel/analytics/next` cannot
+resolve in a browser, so the import would fail and the component has no React
+to render into.
+
+**The script tag is not a workaround — it is the same thing.** Read from
+`@vercel/analytics@2.0.1`, `inject()` builds:
+
+```js
+const script = document.createElement('script');
+script.src = '/_vercel/insights/script.js';   // dist/index.mjs:114
+script.defer = true;                          // dist/index.mjs:183
+```
+
+The React component is a `useEffect` wrapper around that call. With no bundler
+the package can only ever append this one tag, so adding the tag directly is
+the whole integration.
+
+**Why not install it anyway.** Beyond shipping nothing, a `package.json` at the
+repo root changes how Vercel treats the project. Right now there is none, so
+Vercel serves the repository as static output with no build. Introducing one
+invites framework detection and an install/build step on a site that needs
+neither — a real risk to a live deployment in exchange for a dependency the
+browser would never load.
+
+**Two things to know about the endpoint.** It is served by Vercel's edge, not
+from this repository, so it 404s on localhost and on any non-Vercel host. That
+is harmless — nothing on the page depends on it. And it only exists once **Web
+Analytics is enabled for the project** in the Vercel dashboard; until then it
+404s in production too.
+
+**If the site ever moves to Next.js**, delete the tag and use the documented
+`<Analytics/>` component instead — at that point the package is the right call.

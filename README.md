@@ -60,6 +60,14 @@ All visuals are drawn at runtime — the site ships no images.
 | Services accordion | services (`accordion()`) |
 | Stack marquees | stack (CSS + `marquees()`) |
 
+## Analytics
+
+Vercel Web Analytics is wired up with a plain script tag before `</body>` —
+the same tag `@vercel/analytics` would inject, minus the package, since there
+is no bundler here (`docs/DESIGN-DECISIONS.md` #18). It needs Web Analytics
+enabled for the project in the Vercel dashboard, and the endpoint 404s
+anywhere that is not a Vercel deployment, which is harmless.
+
 ## Theming
 
 Colors live as custom properties on `:root` in `assets/css/styles.css`:

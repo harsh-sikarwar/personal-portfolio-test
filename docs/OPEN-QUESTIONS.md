@@ -179,6 +179,12 @@ follows the production branch (usually `main`), so check which branch the
 project is set to build. Both branches carry identical commits, so either works
 — but they will drift if future work lands on only one.
 
+**Web Analytics needs switching on.** The tracking tag is in `index.html`
+(`DESIGN-DECISIONS.md` #18), but `/_vercel/insights/script.js` is served by
+Vercel's edge only after Web Analytics is enabled for the project — Vercel
+dashboard → your project → Analytics → Enable. Until then the tag 404s and
+nothing is recorded. Nothing else on the page is affected either way.
+
 Worth adding later if you want it: long-lived cache headers on `assets/`. It
 needs filename hashing first, otherwise a cached `styles.css` goes stale on the
 next deploy.
